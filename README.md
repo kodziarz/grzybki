@@ -69,8 +69,10 @@ Defaults are `(w1, w2, w3) = (0.4, 0.4, 0.2)`. The terminal-only MST has `J = 1`
 ### `optimize`
 
 ```text
-grzybki optimize INSTANCE [OPTIONS]
+grzybki optimize [INSTANCE] [OPTIONS]
 ```
+
+`INSTANCE` is a path or a name under `data/instances/` (for example `poland_15`). The `--instance` option is an alias, so `grzybki optimize --instance poland_15` also works.
 
 | Option | Default | Meaning |
 | --- | --- | --- |

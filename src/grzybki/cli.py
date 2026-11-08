@@ -10,7 +10,14 @@ def main() -> None:
 
 
 @main.command()
-@click.argument("instance", type=click.Path(exists=True, dir_okay=False))
+@click.argument("instance_arg", required=False, type=click.Path(dir_okay=False))
+@click.option(
+    "--instance",
+    "instance_opt",
+    type=click.Path(dir_okay=False),
+    default=None,
+    help="Instance path or a name under data/instances.",
+)
 @click.option("--out", "out_dir", type=click.Path(file_okay=False), default=None)
 @click.option("--seed", type=int, default=42, show_default=True)
 @click.option("--population", "population_size", type=int, default=30, show_default=True)
@@ -44,7 +51,8 @@ def main() -> None:
     help="Resume from a run directory or checkpoint directory.",
 )
 def optimize(
-    instance: str,
+    instance_arg: str | None,
+    instance_opt: str | None,
     out_dir: str | None,
     seed: int,
     population_size: int,
@@ -64,6 +72,10 @@ def optimize(
     resume: str | None,
 ) -> None:
     from .commands import run_optimize
+
+    instance = instance_arg or instance_opt
+    if instance is None:
+        raise click.UsageError("INSTANCE or --instance is required")
 
     run_optimize(
         instance,

@@ -185,3 +185,44 @@ def test_visualize_reference_geojson(tmp_path) -> None:
     assert result.exit_code == 0, result.output
     assert (figures / "network.png").exists()
     assert not (figures / "report.html").exists()
+
+
+def test_instance_option_and_name_resolution(tmp_path) -> None:
+    instance_path = _make_instance(tmp_path / "tiny.json")
+    runner = CliRunner()
+
+    result = runner.invoke(
+        main,
+        [
+            "optimize",
+            "--instance",
+            str(instance_path),
+            "--out",
+            str(tmp_path / "run_path"),
+            "--population",
+            "8",
+            "--max-evals",
+            "10",
+            "--K",
+            "2",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert (tmp_path / "run_path" / "best.json").exists()
+
+    result = runner.invoke(
+        main,
+        [
+            "optimize",
+            "--instance",
+            "poland_15",
+            "--out",
+            str(tmp_path / "run_name"),
+            "--population",
+            "8",
+            "--max-evals",
+            "8",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert (tmp_path / "run_name" / "best.json").exists()

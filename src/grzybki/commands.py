@@ -43,7 +43,8 @@ def run_optimize(
     save_vectors: bool = False,
     resume: str | None = None,
 ) -> None:
-    instance = Instance.from_json(instance_path)
+    resolved_instance_path = _resolve_instance_path(instance_path)
+    instance = Instance.from_json(resolved_instance_path)
     instance.project(method=projection)
     resolved_seed = _resolve_seed(seed)
 
@@ -72,10 +73,13 @@ def run_optimize(
         resume_state = load_checkpoint(checkpoint_dir)
 
     run_dir = _resolve_run_dir(out_dir, resume_run_dir, instance.name, resolved_seed)
-    append = resume is not None and run_dir.exists()
+    append = (
+        resume_run_dir is not None
+        and run_dir.resolve() == resume_run_dir.resolve()
+    )
 
     extra = {
-        "instance_path": str(Path(instance_path).resolve()),
+        "instance_path": str(resolved_instance_path.resolve()),
         "instance": instance.to_dict(),
         "resolved_seed": resolved_seed,
     }
@@ -211,6 +215,18 @@ def run_visualize(
 
     for label, path in images.items():
         click.echo(f"{label}: {path}")
+
+
+def _resolve_instance_path(value: str) -> Path:
+    path = Path(value)
+    if path.exists():
+        return path
+    candidate = Path("data") / "instances" / f"{value}.json"
+    if candidate.exists():
+        return candidate
+    raise click.ClickException(
+        f"instance not found: {value} (tried {path} and {candidate})"
+    )
 
 
 def _resolve_seed(seed: int) -> int:
