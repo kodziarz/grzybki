@@ -68,7 +68,7 @@ w1 + w2 + w3 = 1
 Defaults: `(w1, w2, w3) = (0.4, 0.4, 0.2)`.
 
 - `C`: total network length.
-- `D`: average terminal detour, weighted by direct terminal distance.
+- `D`: unweighted mean pairwise terminal detour ratio, following docx eq. (5).
 - `FT`: fraction of edges that are not bridges.
 - `C_MST`, `D_MST`: baselines from the terminal-only MST.
 
