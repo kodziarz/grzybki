@@ -146,6 +146,16 @@ python3 scripts/fetch_bdot10k.py --out data/reference/bdot10k_wfs.geojson
 
 OSM data is © OpenStreetMap contributors and available under ODbL 1.0. BDOT10k is open data from GUGiK. Always retain attribution when redistributing derived data.
 
+## Benchmarks
+
+```bash
+python3 scripts/benchmark.py \
+  --max-evals 20000 --population 30 --seed 42 \
+  --out runs/benchmark_20k.json
+```
+
+On the development machine, the default 20,000-evaluation budget takes about 65 s for `poland_15` and 212 s for `poland_30`. Use `--max-evals 2000` while iterating, and `--repeat` or `--sweep` for sensitivity studies. See [docs/benchmarks.md](docs/benchmarks.md) for measured runtimes, the `M` sensitivity sweep, and recommended settings.
+
 ## Limitations
 
 - The Phase 1 decoder is Euclidean and idealized; it does not use terrain, real rail geometry, schedules, capacity, or construction costs.
@@ -164,8 +174,9 @@ src/grzybki/
   viz/                 # convergence, network, animation, report
   cli.py               # Click entry points
 data/instances/        # curated terminal sets
-scripts/               # optional OSM and BDOT10k fetchers
+scripts/               # OSM/BDOT10k fetchers and benchmark harness
 tests/                 # pytest suite
+docs/                  # algorithm, data, and benchmark documentation
 ```
 
 ## License
